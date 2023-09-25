@@ -26,6 +26,7 @@ class Product(models.Model):
     @staticmethod
     def resize_image(img, new_width=800):
         img_full_path = os.path.join(settings.MEDIA_ROOT, img.name)
+        print(img_full_path)
         img_pil = Image.open(img_full_path)
         original_width, original_height = img_pil.size
 
@@ -55,7 +56,22 @@ class Product(models.Model):
             self.resize_image(self.image, max_image_size)
 
     def __str__(self):
-        return self.nome
+        return self.name
+    
+    
+class Variation(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    name = models.CharField(max_length=50, blank= True, null= True)
+    price = models.FloatField()
+    price_marketing_promotional = models.FloatField(default=0)
+    stock = models.PositiveIntegerField(default=1)
     
     def __str__(self):
-        return self.name
+        return self.name or self.product.name
+    
+    class Meta:
+        verbose_name = 'Variation'
+        verbose_name_plural = 'Variations'
+
+
+        
