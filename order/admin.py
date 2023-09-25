@@ -1,3 +1,14 @@
 from django.contrib import admin
+from . import models
 
-# Register your models here.
+class ItemOrderInline(admin.TabularInline):
+    model = models.ItemOrder
+    extra = 1
+    
+class OrderAdmin(admin.ModelAdmin):
+    inlines = [
+        ItemOrderInline
+    ]    
+
+admin.site.register(models.Order)
+admin.site.register(models.ItemOrder)
