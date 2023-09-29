@@ -32,7 +32,7 @@ class ItemOrder(models.Model):
     price_promotional = models.FloatField(default=0)
     amount = models.PositiveIntegerField()
     image = models.CharField(max_length=2000)
-    
+     
     def __str__(self):
         return f'Item do {self.order}'
     
