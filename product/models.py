@@ -5,15 +5,18 @@ from PIL import Image
 from django.db import models
 from django.utils.text import slugify
 
+
 class Product(models.Model):
-    name = models.CharField(max_length=255)
-    short_description = models.TextField(max_length=255)
-    long_description = models.TextField()
+    name = models.CharField(max_length=255, verbose_name='Nome')
+    short_description = models.TextField(
+        max_length=255, verbose_name='Descrição curta')
+    long_description = models.TextField(verbose_name='Descrição longa')
     image = models.ImageField(
-        upload_to= 'product_image/%Y/%m/', blank=True, null=True)
+        upload_to='product_image/%Y/%m/', blank=True, null=True, verbose_name='Imagem')
     slug = models.SlugField(unique=True)
-    price_marketing = models.FloatField()
-    price_marketing_promotional = models.FloatField(default=0)
+    price_marketing = models.FloatField(verbose_name='Preço marketing')
+    price_marketing_promotional = models.FloatField(
+        default=0, verbose_name='Preço promocional')
     type = models.CharField(
         default='V',
         max_length=1,
@@ -22,7 +25,11 @@ class Product(models.Model):
             ('S', 'Simples'),
         )
     )
-    
+
+    def get_price(self):
+        return f'R$ {self.price_marketing:.2f}'.replace('.', ',')
+    get_price.short_description = 'Preço'
+
     @staticmethod
     def resize_image(img, new_width=800):
         img_full_path = os.path.join(settings.MEDIA_ROOT, img.name)
@@ -57,21 +64,18 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
-    
-    
+
+
 class Variation(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    name = models.CharField(max_length=50, blank= True, null= True)
+    name = models.CharField(max_length=50, blank=True, null=True)
     price = models.FloatField()
     price_marketing_promotional = models.FloatField(default=0)
     stock = models.PositiveIntegerField(default=1)
-    
+
     def __str__(self):
         return self.name or self.product.name
-    
+
     class Meta:
         verbose_name = 'Variation'
         verbose_name_plural = 'Variations'
-
-
-        
