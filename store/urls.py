@@ -4,8 +4,11 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('admin/', admin.site.urls),    
-   
+    path('', include('product.urls')),
+    path('perfil/', include('profile_user.urls')),
+    path('pedido/', include('order.urls')),
+    path('admin/', admin.site.urls),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
@@ -14,4 +17,4 @@ if settings.DEBUG:
         path('__debug__/', include(debug_toolbar.urls)),
     ] + urlpatterns
 
- #path('__debug__/', include(debug_toolbar.urls)),
+ # path('__debug__/', include(debug_toolbar.urls)),
