@@ -1,10 +1,13 @@
 from django.shortcuts import render
 from django.views.generic.list import ListView
 from django.views import View
+from django.http import HttpResponse
+from . import models
 
 
 class ListProduct(ListView):
-    pass
+    model = models.Product
+    template_name = 'product/list.html'
 
 
 class DetailProduct(ListView):
@@ -15,7 +18,7 @@ class AddCart(ListView):
     pass
 
 
-class RemoveCar(ListView):
+class RemoveCart(ListView):
     pass
 
 
