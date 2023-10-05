@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load omfilters  %}
 
 {% block conteudo %}
 
@@ -21,14 +22,14 @@
 
             {% if product.price_marketing_promotional  %}
             <span class="product-price">
-              {{ product.price_marketing_promotional }}
+              {{ product.price_marketing_promotional | format_price }}
             </span>
             <span class="product-old-price text-muted">
-              {{ product.price_marketing }}
+              {{ product.price_marketing | format_price }}
             </span>
             {% else %}
             <span class="product-price">
-              {{ product.price_marketing_promotional }}
+              {{ product.price_marketing_promotional | format_price }}
             </span>
             {% endif %}
           </div>
