@@ -9,7 +9,7 @@ class VariationInline(admin.TabularInline):
 
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['name', 'short_description', 'price_marketing',
-                    'get_price', 'price_marketing_promotional']
+                    'get_price_format', 'price_marketing_promotional', 'get_price_promotional_format']
     inlines = [
         VariationInline
     ]

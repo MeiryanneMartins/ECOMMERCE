@@ -4,6 +4,7 @@ import os
 from PIL import Image
 from django.db import models
 from django.utils.text import slugify
+from utils import utils
 
 
 class Product(models.Model):
@@ -26,9 +27,13 @@ class Product(models.Model):
         )
     )
 
-    def get_price(self):
-        return f'R$ {self.price_marketing:.2f}'.replace('.', ',')
-    get_price.short_description = 'Preço'
+    def get_price_format(self):
+        return utils.format_price(self.price_marketing)
+    get_price_format.short_description = 'Preço'
+
+    def get_price_promotional_format(self):
+        return utils.format_price(self.price_marketing_promotional)
+    get_price_promotional_format.short_description = 'Preço Promocional.'
 
     @staticmethod
     def resize_image(img, new_width=800):
