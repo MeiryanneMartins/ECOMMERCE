@@ -117,13 +117,14 @@ class AddCart(View):
         return HttpResponse(f'{variation.product} {variation.name}')
 
 
-class RemoveCart(ListView):
+class RemoveCart(View):
     pass
 
 
-class Cart(ListView):
-    pass
+class Cart(View):
+    def get(self, *args, **kwargs):
+        return render(self.request, 'product/car.html')
 
 
-class Finish(ListView):
+class Finish(View):
     pass
