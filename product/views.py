@@ -23,9 +23,6 @@ class DetailProduct(DetailView):
 
 class AddCart(View):
     def get(self, *args, **kwargs):
-        if self.request.session.get('car'):
-            del self.request.session['car']
-            self.request.session.save()
         http_referer = self.request.META.get(
             'HHTP_REFERER',
             reverse('product:list')
@@ -46,8 +43,8 @@ class AddCart(View):
         product_id = product.id
         product_name = product.name
         variation_name = variation.name or ''
-        price_marketing_promotional = variation.price_marketing_promotional
-        price = variation.price
+        price_unit_promotional = variation.price_marketing_promotional
+        price_unit = variation.price
         amount = 1
         slug = product.slug
         image = product.image
@@ -86,9 +83,9 @@ class AddCart(View):
                     amount_car = variation_stock
 
                     car[variation_id]['amount'] = amount_car
-                    car[variation_id]['price'] = price *\
+                    car[variation_id]['price_amount'] = price_unit * \
                         amount_car
-                    car[variation_id]['price_marketing_promotional'] = price_marketing_promotional *\
+                    car[variation_id]['price_amount_promotional'] = price_unit_promotional * \
                         amount_car
 
             else:
@@ -97,9 +94,11 @@ class AddCart(View):
                     'product_name': product_name,
                     'variation_name': variation_name,
                     'variation_id': variation_id,
-                    'price': price,
-                    'price_marketing_promotional': price_marketing_promotional,
-                    'amount': amount,
+                    'price_unit': price_unit,
+                    'price_unit_promotional': price_unit_promotional,
+                    'price_amount': price_unit,
+                    'price_amount_promotional': price_unit_promotional,
+                    'amount': 1,
                     'slug': slug,
                     'image': image,
                 }
@@ -108,13 +107,11 @@ class AddCart(View):
 
                 messages.success(
                     self.request,
-                    f'Produto{product_name} {variation_name} adicionado ao seu'
+                    f'Produto {product_name} {variation_name} adicionado ao seu '
                     f'carrinho {car[variation_id]["amount"]}x.'
                 )
 
                 return redirect(http_referer)
-
-        return HttpResponse(f'{variation.product} {variation.name}')
 
 
 class RemoveCart(View):
