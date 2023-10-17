@@ -13,7 +13,7 @@ class ListProduct(ListView):
     model = models.Product
     template_name = 'product/list.html'
     context_object_name = 'products'
-    paginate_by = 2
+    paginate_by = 5
 
 
 class DetailProduct(DetailView):
@@ -25,10 +25,6 @@ class DetailProduct(DetailView):
 
 class AddCart(View):
     def get(self, *args, **kwargs):
-        if self.request.session.get('car'):
-            del self.request.session['car']
-            self.request.session.save()
-
         http_referer = self.request.META.get(
             'HHTP_REFERER',
             reverse('product:list')
@@ -50,7 +46,9 @@ class AddCart(View):
         product_name = product.name
         variation_name = variation.name or ''
         price_unit = variation.price
+        print(price_unit)
         price_unit_promotional = variation.price_marketing_promotional
+        print(price_unit_promotional)
         amount = 1
         slug = product.slug
         image = product.image
@@ -72,6 +70,7 @@ class AddCart(View):
             self.request.session.save()
 
         car = self.request.session['car']
+        print(car)
 
         if variation_id in car:
             amount_car = car[variation_id]['amount']
@@ -118,7 +117,33 @@ class AddCart(View):
 
 
 class RemoveCart(View):
-    pass
+    def get(self, *args, **kwargs):
+        http_referer = self.request.META.get(
+            'HTTP_REFERER',
+            reverse('product:list')
+        )
+        variation_id = self.request.GET.get('vid')
+
+        if not variation_id:
+            return redirect(http_referer)
+
+        if not self.request.session.get('car'):
+            return redirect(http_referer)
+
+        if variation_id not in self.request.session['car']:
+            return redirect(http_referer)
+
+        car = self.request.session['car'][variation_id]
+
+        messages.success(
+            self.request,
+            f'Produto {car["product_name"]} {car["variation_name"]} '
+            f'removido do seu carrinho.'
+        )
+
+        del self.request.session['car'][variation_id]
+        self.request.session.save()
+        return redirect(http_referer)
 
 
 class Car(View):

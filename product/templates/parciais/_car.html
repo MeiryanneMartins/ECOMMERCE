@@ -21,6 +21,10 @@
                     {{ linha.product_name}}
                 </a>
 
+                <a class="ml-3" href="{% url 'product:removerdocarrinho' %}?vid={{ linha.variation_id }}">
+                  <i class="fas fa-times-circle text-danger" aria-hidden="true"></i>
+                </a>
+
             </td>
             <td>{{ linha.variation_name }}</td>
             <td>
