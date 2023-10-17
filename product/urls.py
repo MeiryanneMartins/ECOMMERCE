@@ -9,7 +9,8 @@ urlpatterns = [
     path('adicionarcarrinho/', views.AddCart.as_view(),
          name="adicionaraocarrinho"),
     path('removecarrinho/', views.RemoveCart.as_view(), name='removecarrinho'),
-    path('carrinho/', views.Cart.as_view(), name='carrinho'),
-    path('finalizar/', views.Finish.as_view(), name='finalizar')
+    path('carrinho/', views.Car.as_view(), name='carrinho'),
+    path('finalizar/', views.Finish.as_view(), name='finalizar'),
+    # path('resumodacompra/', views.ResumoDaCompra.as_view(), name="resumodacompra"),
 
 ]

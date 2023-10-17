@@ -6,6 +6,8 @@ from django.http import HttpResponse
 from django.contrib import messages
 from . import models
 
+from pprint import pprint
+
 
 class ListProduct(ListView):
     model = models.Product
@@ -23,6 +25,10 @@ class DetailProduct(DetailView):
 
 class AddCart(View):
     def get(self, *args, **kwargs):
+        if self.request.session.get('car'):
+            del self.request.session['car']
+            self.request.session.save()
+
         http_referer = self.request.META.get(
             'HHTP_REFERER',
             reverse('product:list')
@@ -35,16 +41,16 @@ class AddCart(View):
                 'Produto não existe'
             )
             return redirect(http_referer)
-
         variation = get_object_or_404(models.Variation, id=variation_id)
-        product = variation.product
         variation_stock = variation.stock
+        print(f'meu estoque: {variation_stock}')
 
+        product = variation.product
         product_id = product.id
         product_name = product.name
         variation_name = variation.name or ''
-        price_unit_promotional = variation.price_marketing_promotional
         price_unit = variation.price
+        price_unit_promotional = variation.price_marketing_promotional
         amount = 1
         slug = product.slug
         image = product.image
@@ -59,68 +65,68 @@ class AddCart(View):
                 self.request,
                 'Estoque insuficiente'
             )
-
             return redirect(http_referer)
 
         if not self.request.session.get('car'):
             self.request.session['car'] = {}
             self.request.session.save()
 
-            car = self.request.session['car']
+        car = self.request.session['car']
 
-            if variation_id in car:
-                amount_car = car[variation_id]['amount']
-                amount_car += 1
+        if variation_id in car:
+            amount_car = car[variation_id]['amount']
+            amount_car += 1
 
-                if variation_stock < amount_car:
-                    messages.warning(
-                        self.request,
-                        f'Estoque insuficiente para {amount_car}x no'
-                        f'produto "{product.name}". Adicionamos {variation_stock}x'
-                        f'no seu carrinho.'
-                    )
-
-                    amount_car = variation_stock
-
-                    car[variation_id]['amount'] = amount_car
-                    car[variation_id]['price_amount'] = price_unit * \
-                        amount_car
-                    car[variation_id]['price_amount_promotional'] = price_unit_promotional * \
-                        amount_car
-
-            else:
-                car[variation_id] = {
-                    'product_id': product_id,
-                    'product_name': product_name,
-                    'variation_name': variation_name,
-                    'variation_id': variation_id,
-                    'price_unit': price_unit,
-                    'price_unit_promotional': price_unit_promotional,
-                    'price_amount': price_unit,
-                    'price_amount_promotional': price_unit_promotional,
-                    'amount': 1,
-                    'slug': slug,
-                    'image': image,
-                }
-
-                self.request.session.save()
-
-                messages.success(
+            if variation_stock < amount_car:
+                messages.warning(
                     self.request,
-                    f'Produto {product_name} {variation_name} adicionado ao seu '
-                    f'carrinho {car[variation_id]["amount"]}x.'
+                    f'estoque insuficiente para {amount_car}x no'
+                    f'produto "{product_name}". Adicionamos {variation.stock}x'
+                    f'no seu carrinho.'
                 )
 
-                return redirect(http_referer)
+                amount_car = variation_stock
+            car[variation_id]['amount'] = amount_car
+            car[variation_id]['price_amount'] = price_unit * \
+                amount_car
+            car[variation_id]['price_amount_promotional'] = price_unit_promotional * \
+                amount_car
+        else:
+            car[variation_id] = {
+                'product_id': product_id,
+                'product_name': product_name,
+                'variation_name': variation_name,
+                'variation_id': variation_id,
+                'price_unit': price_unit,
+                'price_unit_promotional': price_unit_promotional,
+                'price_amount': price_unit_promotional,
+                'price_amount_promotional': price_unit_promotional,
+                'amount': 1,
+                'slug': slug,
+                'image': image,
+
+            }
+        self.request.session.save()
+
+        messages.success(
+            self.request,
+            f'Produto {product_name} {variation_name} adicionado ao seu '
+            f'carrinho {car[variation_id]["amount"]}x.'
+        )
+        # pprint(car[variation_id])
+        return redirect(http_referer)
 
 
 class RemoveCart(View):
     pass
 
 
-class Cart(View):
+class Car(View):
     def get(self, *args, **kwargs):
-        return render(self.request, 'product/car.html')
+        contexto = {
+            'car': self.request.session.get('car', {})
+        }
+        return render(self.request, 'product/car.html', contexto)
 
 
 class Finish(View):

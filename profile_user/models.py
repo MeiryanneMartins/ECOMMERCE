@@ -8,7 +8,7 @@ from utils.validate_cpf import valida_cpf
 
 class ProfileUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE,
-                                   verbose_name='Usuário')
+                                verbose_name='Usuário')
     age = models.PositiveIntegerField()
     birthday_data = models.DateField()
     cpf = models.CharField(max_length=11)
@@ -71,8 +71,8 @@ class ProfileUser(models.Model):
         if not valida_cpf(self.cpf):
             error_messages['cpf'] = 'Digite um CPF válido'
 
-        if re.search(r'[^0-9]', self.cep) or len(self.cep) < 8:
-            error_messages['cep'] = 'CEP inválido, digite os 8 digitos do CEP.'
+        if re.search(r'[^0-9]', self.zip_code) or len(self.zip_code) < 8:
+            error_messages['zip_code'] = 'CEP inválido, digite os 8 digitos do CEP.'
 
         if error_messages:
             raise ValidationError(error_messages)
