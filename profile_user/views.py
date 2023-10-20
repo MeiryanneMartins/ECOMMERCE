@@ -63,11 +63,22 @@ class Create(BaseProfile):
 
         username = self.userform.cleaned_data.get('username')
         password = self.userform.cleaned_data.get('password')
-
+        email = self.userform.cleaned_data.get('email')
+        first_name = self.userform.cleaned_data.get('first_name')
+        last_name = self.userform.cleaned_data.get('last_name')
         # username = self.userform.cleaned_data.get('username')
 
         if self.request.user.is_authenticated:
-            pass
+            user = self.request.user
+            user.username = username
+
+            if password:
+                user.set_password(password)
+
+            user.email = email
+            user.first_name = first_name
+            user.last_name = last_name
+            user.save()
         else:
             user = self.userform.save(commit=False)
             user.set_password(password)
