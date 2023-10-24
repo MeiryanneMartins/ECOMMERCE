@@ -15,6 +15,8 @@ class BaseProfile(View):
     def setup(self, *args, **kwargs):
         super().setup(*args, **kwargs)
 
+        self.car = copy.deepcopy(self.request.session.get('car', {}))
+
         self.profile = None
 
         if self.request.user.is_authenticated:
@@ -88,6 +90,8 @@ class Create(BaseProfile):
             profile.set_password(password)
             profile.save()
 
+        self.request.session['car'] = self.car
+        self.request.session.save()
         return self.render
 
 
