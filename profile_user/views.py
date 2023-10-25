@@ -94,6 +94,8 @@ class Create(BaseProfile):
             if not self.profile:
                 self.profileform.cleaned_data['user'] = user
                 print(self.profileform.cleaned_data)
+                profile = models.ProfileUser(**self.profileform.cleaned_data)
+                profile.save()
         else:
             user = self.userform.save(commit=False)
             user.set_password(password)
