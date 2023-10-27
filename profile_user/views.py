@@ -1,9 +1,9 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import redirect, render, get_object_or_404
 from django.views.generic import ListView
 from django.views import View
 from django.http import HttpResponse
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
 import copy
@@ -116,18 +116,64 @@ class Create(BaseProfile):
 
         self.request.session['car'] = self.car
         self.request.session.save()
+
+        messages.success(
+            self.request,
+            'Seu cadastro foi criado com sucesso!'
+        )
+
+        messages.success(
+            self.request,
+            'Você efetuou seu login e já pode concluir a compra!'
+        )
+        # return redirect('product:car')
         return self.renderizar
 
 
 class UpdateProfile(View):
-    pass
+    def get(self, *args, **kwargs):
+        return HttpResponse('Atualizar')
 
 
 class Login(View):
-    pass
+    def post(self, *args, **kwargs):
+        username = self.request.POST.get('username')
+        password = self.request.POST.get('password')
+
+        if not username or not password:
+            messages.error(
+                self.request,
+                'Usuário ou senha inválidos.'
+            )
+            return redirect('perfil:criar')
+
+        user = authenticate(
+            self.request, username=username, password=password)
+
+        if not user:
+            messages.error(
+                self.request,
+                'Usuário ou senha inválidos.'
+            )
+            return redirect('perfil:criar')
+
+        login(self.request, user=user)
+
+        messages.success(
+            self.request,
+            'Você fez login no sistema e pode concluir sua compra.'
+        )
+        return redirect('product:carrinho')
 
 
 class Logout(View):
-    pass
+    def get(self, *args, **kwargs):
+        car = copy.deepcopy(self.request.session.get('carrinho'))
+
+        logout(self.request)
+
+        self.request.session['carrinho'] = car
+        self.request.session.save()
+        return HttpResponse('product:list')
 
 # Create your views here.
