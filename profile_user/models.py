@@ -10,7 +10,7 @@ class ProfileUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE,
                                 verbose_name='Usuário')
     age = models.PositiveIntegerField()
-    birthday_data = models.DateField()
+    birthday_date = models.DateField()
     cpf = models.CharField(max_length=11)
     address = models.CharField(max_length=50)
     phone_number = models.CharField(max_length=5)

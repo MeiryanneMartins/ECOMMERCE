@@ -4,6 +4,8 @@ from django.views.generic.detail import DetailView
 from django.views import View
 from django.http import HttpResponse
 from django.contrib import messages
+
+from profile_user.models import ProfileUser
 from . import models
 
 from pprint import pprint
@@ -155,4 +157,29 @@ class Car(View):
 
 
 class Finish(View):
-    pass
+    def get(self, *args, **kwargs):
+        if not self.request.user.is_authenticated:
+            return redirect('perfil:criar')
+
+        profile = ProfileUser.objects.filter(user=self.request.user).exists()
+
+        if not profile:
+            messages.error(
+                self.request,
+                'Usuário sem perfil.'
+            )
+            return redirect('perfil:criar')
+
+        if not self.request.session.get('car'):
+            messages.error(
+                self.request,
+                'Carrinho vazio.'
+            )
+            return redirect('product:list')
+
+        contexto = {
+            'user': self.request.user,
+            'car': self.request.session['car'],
+        }
+
+        return render(self.request, 'product/finish.html', contexto)
