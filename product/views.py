@@ -159,16 +159,17 @@ class Car(View):
 class Finish(View):
     def get(self, *args, **kwargs):
         if not self.request.user.is_authenticated:
-            return redirect('perfil:criar')
+            return redirect('profile_user:criar')
 
         profile = ProfileUser.objects.filter(user=self.request.user).exists()
+        pprint(profile)
 
         if not profile:
             messages.error(
                 self.request,
                 'Usuário sem perfil.'
             )
-            return redirect('perfil:criar')
+            return redirect('profile_user:criar')
 
         if not self.request.session.get('car'):
             messages.error(
