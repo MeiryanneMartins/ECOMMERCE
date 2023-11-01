@@ -8,8 +8,6 @@ from django.contrib import messages
 from profile_user.models import ProfileUser
 from . import models
 
-from pprint import pprint
-
 
 class ListProduct(ListView):
     model = models.Product
@@ -162,7 +160,6 @@ class Finish(View):
             return redirect('profile_user:criar')
 
         profile = ProfileUser.objects.filter(user=self.request.user).exists()
-        pprint(profile)
 
         if not profile:
             messages.error(

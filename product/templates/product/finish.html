@@ -20,13 +20,39 @@
             <dt class="col-lg-2">Idade:</dt>
             <dd class="col-lg-4">{{ user.profile_user.age }}</dd>
             <dt class="col-lg-2">Nascimento:</dt>
-            <dd class="col-lg-4">{{ user.profile.birthday_date }}</dd>
+            <dd class="col-lg-4">{{ user.profile_user.birthday_date }}</dd>
 
             <dt class="col-lg-2">CPF:</dt>
             <dd class="col-lg-4">{{ user.profile_user.cpf }}</dd>
             <dt class="col-lg-2">E-mail:</dt>
             <dd class="col-lg-4">{{ user.email }}</dd>
         </dl>
+
+        <p class="lead">Dados de endereço</p>
+        <p>Caso precise editar, <a href="{% url 'profile_user:criar' %}">clique aqui</a></p>
+        <dl class="row">
+            <dt class="col-lg-2">Endereço:</dt>
+            <dd class="col-lg-4">{{ user.profile_user.neighborhood }}</dd>
+            <dt class="col-lg-2">Número:</dt>
+            <dd class="col-lg-4">{{ user.profile_user.phone_number }}</dd>
+
+            <dt class="col-lg-2">Complemento:</dt>
+            <dd class="col-lg-4">{{ user.profile_user.complement }}</dd>
+            <dt class="col-lg-2">Nascimento:</dt>
+            <dd class="col-lg-4">{{ user.profile_user.neighborhood }}</dd>
+
+            <dt class="col-lg-2">Cidade:</dt>
+            <dd class="col-lg-4">{{ user.profile_user.city }}</dd>
+            <dt class="col-lg-2">Estado:</dt>
+            <dd class="col-lg-4">{{ user.profile_user.state }}</dd>
+
+            <dt class="col-lg-2">CEP:</dt>
+            <dd class="col-lg-4">{{ user.profile_user.zip_code }}</dd>
+        </dl>
+    </div>
+</div>
+
+
 
 <div class="row mt-3">
     <div class="col">
@@ -37,7 +63,12 @@
     </div>
 
 </div>
-
+<div class="row mt-3">
+    <div class="col">
+        <p class="lead text-center"><span class="font-weight-bold">Total do carrinho:</span>
+            {{ car|cart_totals|format_price }}</p>
+    </div>
+</div>
 
 <div class="row">
     <div class="col">
