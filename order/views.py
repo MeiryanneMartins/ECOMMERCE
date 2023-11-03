@@ -1,17 +1,29 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import ListView
 from django.views import View
+from django.http import HttpResponse
+from django.contrib import messages
 
 
 class Pay(View):
-    pass
+    template_name = 'order/pay.html'
+
+    def get(self, *args, **kwargs):
+        contexto = {
+
+        }
+
+        return render(self.request, self.template_name, contexto)
 
 
 class SaveOrder(View):
-    pass
+    def get(self, *args, **kwargs):
+        return HttpResponse('Fechar pedido')
 
 
 class Detail(View):
-    pass
+    def get(self, *args, **kwargs):
+        return HttpResponse('Fechar pedido')
+
 
 # Create your views here.
