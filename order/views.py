@@ -39,7 +39,11 @@ class Pay(View):
 
             stock = variation.stock
             qtd_car = car[vid]['amount']
+            price_unit = car[vid]['price']
+            price_unit_promo = car[vid]['price_marketing_promotional']
 
+            if stock < qtd_car:
+                car[vid]['amount'] = stock
         contexto = {
 
         }
