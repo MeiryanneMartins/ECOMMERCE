@@ -35,7 +35,7 @@ class Pay(View):
         )
 
         for variation in bd_variations:
-            vid = variation.id
+            vid = str(variation.id)
 
             stock = variation.stock
             qtd_car = car[vid]['amount']
@@ -44,6 +44,15 @@ class Pay(View):
 
             if stock < qtd_car:
                 car[vid]['amount'] = stock
+                car[vid]['price_amount'] = stock * price_unit
+                car[vid]['price_amount_promotional'] = stock * \
+                    price_unit_promo
+
+                messages.error(
+                    self.request,
+                    'Estoque insuficiente.'
+                )
+                return redirect('product:car')
         contexto = {
 
         }
