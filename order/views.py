@@ -87,9 +87,8 @@ class Pay(View):
             ]
         )
 
-        contexto = {
-
-        }
+        del self.request.session['car']
+        return redirect('order:list')
 
         return render(self.request, self.template_name, contexto)
 
@@ -102,6 +101,11 @@ class SaveOrder(View):
 class Detail(View):
     def get(self, *args, **kwargs):
         return HttpResponse('Fechar pedido')
+
+
+class List(View):
+    def get(self, *args, **kwargs):
+        return HttpResponse('List')
 
 
 # Create your views here.
