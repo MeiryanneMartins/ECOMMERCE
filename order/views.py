@@ -5,6 +5,9 @@ from django.http import HttpResponse
 from django.contrib import messages
 
 from product.models import Variation
+from .models import Order, ItemOrder
+
+from utils import utils
 
 
 class Pay(View):
@@ -39,8 +42,8 @@ class Pay(View):
 
             stock = variation.stock
             qtd_car = car[vid]['amount']
-            price_unit = car[vid]['price']
-            price_unit_promo = car[vid]['price_marketing_promotional']
+            price_unit = car[vid]['price_amount']
+            price_unit_promo = car[vid]['price_amount_promotional']
 
             if stock < qtd_car:
                 car[vid]['amount'] = stock
@@ -52,7 +55,38 @@ class Pay(View):
                     self.request,
                     'Estoque insuficiente.'
                 )
+
+                self.request.session.save()
                 return redirect('product:car')
+
+        total_amount_car = utils.cart_total_qtd(car)
+        value_total_car = utils.cart_totals(car)
+
+        order = Order(
+            user=self.request.user,
+            total_amount=value_total_car,
+            sum_order=total_amount_car,
+            status='C',
+        )
+
+        order.save()
+        ItemOrder.objects.bulk_create(
+            [
+                ItemOrder(
+                    order=order,
+                    product=v['product_name'],
+                    product_id=v['product_id'],
+                    variation=v['variation_name'],
+                    variation_id=v['variation_id'],
+                    price=v['price_amount'],
+                    price_promotional=v['price_amount_promotional'],
+                    amount=v['amount'],
+                    image=v['image'],
+
+                ) for v in car.values()
+            ]
+        )
+
         contexto = {
 
         }

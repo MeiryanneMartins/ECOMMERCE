@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     sum_order = models.FloatField()
+    total_amount = models.PositiveIntegerField()
     status = models.CharField(
         default="C",
         max_length=1,
@@ -18,10 +19,11 @@ class Order(models.Model):
             ('F', 'Finalizado'),
         )
     )
-    
+
     def __str__(self):
         return f'Pedido N. {self.pk}'
-    
+
+
 class ItemOrder(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     product = models.CharField(max_length=255)
@@ -32,11 +34,10 @@ class ItemOrder(models.Model):
     price_promotional = models.FloatField(default=0)
     amount = models.PositiveIntegerField()
     image = models.CharField(max_length=2000)
-     
+
     def __str__(self):
         return f'Item do {self.order}'
-    
-    
+
     class Meta:
         verbose_name = 'Item order'
-        verbose_name_plural = 'items orders'    
+        verbose_name_plural = 'items orders'
