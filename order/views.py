@@ -1,5 +1,5 @@
-from django.shortcuts import render, redirect
-from django.views.generic import ListView
+from django.shortcuts import render, redirect, reverse
+from django.views.generic import ListView, DetailView
 from django.views import View
 from django.http import HttpResponse
 from django.contrib import messages
@@ -10,7 +10,14 @@ from .models import Order, ItemOrder
 from utils import utils
 
 
-class Pay(View):
+class Pay(DetailView):
+    template_name = 'order/pay.html'
+    model = Order
+    pk_url_kwarg = 'pk'
+    context_object_name = 'order'
+
+
+class SaveOrder(View):
     template_name = 'order/pay.html'
 
     def get(self, *args, **kwargs):
@@ -88,14 +95,16 @@ class Pay(View):
         )
 
         del self.request.session['car']
-        return redirect('order:list')
+        return redirect(
+            reverse(
+                'order:pay',
+                kwargs={
+                    'pk': order.pk
+                }
+            )
+        )
 
         return render(self.request, self.template_name, contexto)
-
-
-class SaveOrder(View):
-    def get(self, *args, **kwargs):
-        return HttpResponse('Fechar pedido')
 
 
 class Detail(View):
