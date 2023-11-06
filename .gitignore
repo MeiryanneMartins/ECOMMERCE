@@ -275,9 +275,7 @@ fabric.properties
 
 .idea/
 
-assets
-
-templates/static/assets
+templates/static
 
 # Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-249601023
 

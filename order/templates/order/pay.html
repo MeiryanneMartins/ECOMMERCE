@@ -1,11 +1,24 @@
 {% extends 'base.html'  %}
 
+{% block titulo %}Pay | {% endblock %}
+
+{% load omfilters %}
+
+{% load static %}
 
 {%  block conteudo %}
 
 <div class="col">
   <div class="row">
     <h3>Escolha o método de pagamento</h3>
+  </div>
+</div>
+
+{% include 'parciais/_order.html' %}
+
+<div class="row mt-4">
+  <div class="col">
+      <a href="#" class="btn btn-primary btn-block btn-lg">Pagar</a>
   </div>
 </div>
 

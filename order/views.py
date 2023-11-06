@@ -97,7 +97,7 @@ class SaveOrder(View):
         del self.request.session['car']
         return redirect(
             reverse(
-                'order:pay',
+                'order:pay.html',
                 kwargs={
                     'pk': order.pk
                 }
