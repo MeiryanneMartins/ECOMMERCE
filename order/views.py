@@ -10,7 +10,20 @@ from .models import Order, ItemOrder
 from utils import utils
 
 
-class Pay(DetailView):
+class DispatchLoginRequiredMixin(View):
+    def dispatch(self, *args, **kwargs):
+        if not self.request.user.is_authenticated:
+            return redirect('profile_user:criar')
+
+        return super().dispatch(*args, **kwargs)
+
+    def get_queryset(self, *args, **kwargs):
+        qs = super().get_queryset(*args, **kwargs)
+        qs = qs.filter(user=self.request.user)
+        return qs
+
+
+class Pay(DispatchLoginRequiredMixin, DetailView):
     template_name = 'order/pay.html'
     model = Order
     pk_url_kwarg = 'pk'
@@ -97,7 +110,7 @@ class SaveOrder(View):
         del self.request.session['car']
         return redirect(
             reverse(
-                'order:pay.html',
+                'order:pagar',
                 kwargs={
                     'pk': order.pk
                 }

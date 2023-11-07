@@ -6,6 +6,18 @@
         <h3>{{ order }}</h3>
 
         <div class="row mt-4">
+            <div class="col-lg-2 font-weight-bold">Número do pedido:</div>
+            <div class="col-lg-4">{{ order.id }}</div>
+            <div class="col-lg-2 font-weight-bold">Total a pagar:</div>
+            <div class="col-lg-4">{{  order.total_amount|format_price }}</div>
+
+            <div class="col-lg-2 font-weight-bold">QTD. Itens:</div>
+            <div class="col-lg-4">{{order.sum_order}}</div>
+            <div class="col-lg-2 font-weight-bold">Status:</div>
+            <div class="col-lg-4">{{ order.get_status_display }}</div>
+        </div>
+
+        <div class="row mt-4">
             <div class="col">
                 <h3>Produtos</h3>
             </div>
@@ -20,6 +32,25 @@
                     <th>QTD.</th>
                     <th>Total</th>
                 </tr>
+
+                {% for line in order.itemorder_set.all %}
+                <tr>
+                    <td class="d-none d-lg-block">
+                        <img class="cart-img" src="{% get_media_prefix %}{{ line.image }}">
+                    </td>
+                    <td>{{ line.order }}</td>
+                    <td>{{ line.variation }}</td>
+                    <td>{{ line.amount }}</td>
+                    <td>
+                        {% if line.price_promotional %}
+                        {{ line.price_promotional|format_price }}
+                        {% else %}
+                        {{ line.price|format_price }}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+
             </table>
         </div>
     </div>
