@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block titulo %}{{ order }} | {% endblock %}
+
+{% load omfilters %}
+{% load static %}
+
+{% block conteudo %}
+
+{% include 'parciais/_order.html' %}
+
+{% endblock %}

@@ -120,14 +120,19 @@ class SaveOrder(View):
         return render(self.request, self.template_name, contexto)
 
 
-class Detail(View):
-    def get(self, *args, **kwargs):
-        return HttpResponse('Fechar pedido')
+class Detail(DispatchLoginRequiredMixin, DetailView):
+    model = Order
+    context_object_name = 'orders'
+    template_name = 'order/detail.html'
+    pk_url_kwarg = 'pk'
 
 
-class List(View):
-    def get(self, *args, **kwargs):
-        return HttpResponse('List')
+class List(DispatchLoginRequiredMixin, ListView):
+    model = Order
+    context_object_name = 'orders'
+    template_name = 'order/list.html'
+    paginate_by = 10
+    ordering = ['-id']
 
 
 # Create your views here.
