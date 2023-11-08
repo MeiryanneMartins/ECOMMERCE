@@ -4,6 +4,7 @@ from django.views.generic.detail import DetailView
 from django.views import View
 from django.http import HttpResponse
 from django.contrib import messages
+from django.db.models import Q
 
 from profile_user.models import ProfileUser
 from . import models
@@ -15,6 +16,26 @@ class ListProduct(ListView):
     context_object_name = 'products'
     paginate_by = 10
     ordering = ['-id']
+
+
+class Search(ListProduct):
+    def get_queryset(self, *args, **kwargs):
+        termo = self.request.GET.get('termo') or self.request.session['termo']
+        qs = super().get_queryset(*args, **kwargs)
+
+        if not termo:
+            return qs
+
+        self.request.session['termo'] = termo
+
+        qs = qs.filter(
+            Q(name__icontains=termo) |
+            Q(short_description__icontains=termo) |
+            Q(long_description__icontains=termo)
+        )
+
+        self.request.session.save()
+        return qs
 
 
 class DetailProduct(DetailView):
